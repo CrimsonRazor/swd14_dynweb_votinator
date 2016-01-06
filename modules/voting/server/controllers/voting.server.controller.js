@@ -97,7 +97,7 @@ exports.votingByID = function (req, res, next, id) {
         });
     }
 
-    Voting.findById(id).populate('user', 'displayName').exec(function (err, article) {
+    Voting.findById(id).populate('user', 'displayName').exec(function (err, voting) {
         if (err) {
             return next(err);
         } else if (!voting) {
