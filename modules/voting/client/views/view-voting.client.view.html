@@ -1,0 +1,12 @@
+<section>
+  <span class="voting-title">{{ title }}</span>
+  <ul class="voting-options-list">
+    <li class="voting-options-item" ng-repeat="option in content">
+      <span class="voting-option"
+            data-ng-class="'voting-option-selected': selected"
+            data-ng-click="vote()">
+        {{ option }}
+      </span>
+    </li>
+  </ul>
+</section>

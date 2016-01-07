@@ -1,0 +1,15 @@
+.voting-create-title {
+    font-size: 3em;
+}
+
+.voting-list-title {
+    font-size: 2em;
+}
+
+.voting-title {
+    font-size: 2em;
+}
+
+.selectable {
+    cursor: pointer;
+}
