@@ -1,0 +1,6 @@
+<ul class="list-group col-md-3">
+  <li class="list-group-item selectable"
+      ng-repeat="voting in votings"
+      ng-class="{'active': voting.selected}"
+      ng-click="selectVoting(voting)"><span class="voting-list-title">{{ voting.title }}</span></li>
+</ul>

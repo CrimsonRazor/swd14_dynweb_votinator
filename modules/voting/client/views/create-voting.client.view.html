@@ -3,63 +3,6 @@
     <h1>New Voting</h1>
   </div>
   <div class="col-md-12">
-    <form name="votingForm" class="form-horizontal" ng-submit="create(votingForm.$valid)" novalidate>
-      <fieldset>
-        <div class="form-group" show-errors>
-          <label for="title">Title</label>
-          <input name="title" type="text" ng-model="title" id="title" class="form-control" placeholder="Title" required>
-          <div ng-messages="votingForm.title.$error" role="alert">
-            <p class="help-block error-text" ng-message="required">Voting title is required.</p>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="btn-group btn-group-justified" role="group" aria-label="...">
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-default">Einmalig</button>
-            </div>
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-default">Wiederholend</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="btn-group btn-group-justified" role="group" aria-label="...">
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-default">Single Choice</button>
-            </div>
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-default">Multiple Choice</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="options">Options</label>
-          <ul name="options" ng-model="options" id="options" class="list-group">
-            <li class="list-group-item" ng-repeat="option in options">
-              <div class="btn btn-warning" ng-click="removeOption(option)">X</div>
-              <input type="text" title="Name of Option" ng-model="option" class="voting-create-option-name" />
-            </li>
-          </ul>
-
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Option..." ng-model="option" />
-            <span class="input-group-btn">
-              <button class="btn btn-primary" type="button" ng-click="addOption(option)">+</button>
-            </span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <input type="submit" class="btn btn-default">
-        </div>
-
-        <div ng-show="error" class="text-danger">
-          <strong ng-bind="error"></strong>
-        </div>
-      </fieldset>
-    </form>
+    <div voting-create></div>
   </div>
 </section>
