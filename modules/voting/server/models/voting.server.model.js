@@ -6,6 +6,11 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
+var votingTypeEnum = {
+    values: ['once', 'recurring'],
+    message: 'Invalid voting type found: "{VALUE}"'
+};
+
 /**
  * Voting Schema
  */
@@ -16,14 +21,27 @@ var VotingSchema = new Schema({
     },
     title: {
         type: String,
-        default: '',
         trim: true,
         required: 'Title cannot be blank'
     },
-    content: {
+    answers: [{
+        type: {
+            title: {type: String, required: 'Answer cannot be blank'},
+            votes: [Schema.ObjectId]
+        }
+    }],
+    votingType: {
         type: String,
-        default: '',
-        trim: true
+        enum: votingTypeEnum
+    },
+    start: {
+        type: Date,
+        default: Date.now,
+        required: true
+    },
+    end: {
+        type: Date,
+        required: 'End date must be specified'
     },
     user: {
         type: Schema.ObjectId,

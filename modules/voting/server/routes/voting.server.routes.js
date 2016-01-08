@@ -14,7 +14,8 @@ module.exports = function (app) {
         .post(voting.create);
 
     // Single voting routes
-    app.route('/api/votings/:votingId').all(votingPolicy.isAllowed)
+    app.route('/api/votings/:votingId')
+        .all(votingPolicy.isAllowed)
         .get(voting.read)
         .put(voting.update)
         .delete(voting.delete);
