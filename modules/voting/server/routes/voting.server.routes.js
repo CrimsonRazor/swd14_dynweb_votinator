@@ -20,6 +20,13 @@ module.exports = function (app) {
         .put(voting.update)
         .delete(voting.delete);
 
+    // Vote route
+    app.route('/api/votings/:votingId/vote')
+        .all(votingPolicy.isAllowed)
+        .post(voting.vote);
+        //.put(voting.updateVote)
+        //.delete(voting.deleteVote);
+
     // Finish by binding the voting middleware
     app.param('votingId', voting.votingByID);
 };

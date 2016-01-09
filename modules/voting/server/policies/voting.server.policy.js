@@ -29,6 +29,9 @@ exports.invokeRolesPolicies = function () {
         }, {
             resources: '/api/votings/:votingId',
             permissions: ['get']
+        }, {
+            resources: '/api/votings/:votingId/vote/:answerId',
+            permissions: '*'
         }]
     }, {
         roles: ['guest'],

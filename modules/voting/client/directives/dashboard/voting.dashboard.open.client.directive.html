@@ -1,0 +1,24 @@
+<div class="panel">
+  <div class="panel-heading">
+    <h1 class="panel-title">Open Votings</h1>
+  </div>
+  <div class="panel-body">
+    <div class="list-group">
+      <button data-ng-repeat="voting in votings"
+              data-ng-bind="voting.title"
+              data-ng-click="selectVoting(voting)"
+              class="list-group-item"></button>
+    </div>
+    <div class="container-fluid">
+      <div data-ng-repeat="answer in voting.answers" class="row">
+        <div class="col-md-1">
+          <span data-ng-bind="answer.title"></span>
+          {{answer}}
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary" data-ng-click="vote(answer)">Vote!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

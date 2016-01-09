@@ -11,10 +11,10 @@
     <div class="form-group">
       <div class="btn-group btn-group-justified" role="group" aria-label="...">
         <div class="btn-group" role="group">
-          <button type="button" class="btn btn-default">Einmalig</button>
+          <button type="button" class="btn btn-default">Once-only</button>
         </div>
         <div class="btn-group" role="group">
-          <button type="button" class="btn btn-default">Wiederholend</button>
+          <button type="button" class="btn btn-default">Recurring</button>
         </div>
       </div>
     </div>
@@ -31,18 +31,18 @@
     </div>
 
     <div class="form-group">
-      <label for="options">Options</label>
-      <ul name="options" ng-model="options" id="options" class="list-group">
-        <li class="list-group-item" ng-repeat="option in options">
-          <div class="btn btn-warning" ng-click="removeOption(option)">X</div>
-          <input type="text" title="Name of Option" ng-model="option" class="voting-create-option-name" />
+      <label for="answers">Answers</label>
+      <ul name="answers" ng-model="answers" id="answers" class="list-group">
+        <li class="list-group-item" ng-repeat="answer in answers">
+          <div class="btn btn-warning" ng-click="removeAnswer(answer)">X</div>
+          <span ng-bind="answer.title" class="voting-create-answer-name"></span>
         </li>
       </ul>
 
       <div class="input-group">
-        <input type="text" class="form-control" placeholder="Option..." ng-model="option" />
+        <input type="text" class="form-control" placeholder="Answer..." ng-model="answer.title"/>
             <span class="input-group-btn">
-              <button class="btn btn-primary" type="button" ng-click="addOption(option)">+</button>
+              <button class="btn btn-primary" type="button" ng-click="addAnswer(answer)">+</button>
             </span>
       </div>
     </div>

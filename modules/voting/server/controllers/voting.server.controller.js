@@ -6,6 +6,7 @@
 var path = require('path'),
     mongoose = require('mongoose'),
     Voting = mongoose.model('Voting'),
+    Answer = mongoose.model('Answer'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
@@ -87,6 +88,61 @@ exports.list = function (req, res) {
 };
 
 /**
+ * Voting function
+ */
+exports.vote = function (req, res) {
+    var voting = req.voting;
+    var answerId = req.body._answerId;
+
+    if (!mongoose.Types.ObjectId.isValid(answerId)) {
+        return res.status(400).send({
+            message: 'Answer id is invalid'
+        });
+    }
+
+    var foundAnswer;
+
+    voting.answers.forEach(function (answer) {
+        if (answer._id == answerId) {
+            foundAnswer = answer;
+        }
+    });
+
+    if (!foundAnswer) {
+        res.status(400).send({
+            message: 'No answer with the given id found for this voting.'
+        });
+        return;
+    }
+
+    Voting.count({_id: voting._id, 'answers.votes': req.user.id}, function (err, count) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            if (count != 0) {
+                res.status(400).send({
+                    message: 'You already voted! Please remove your vote first.'
+                });
+            } else {
+                foundAnswer.votes.push(req.user.id);
+                voting.save(function (err) {
+                    if (err) {
+                        return res.status(400).send({
+                            message: errorHandler.getErrorMessage(err)
+                        });
+                    } else {
+                        res.status(200).send();
+                    }
+                });
+            }
+        }
+
+    });
+};
+
+/**
  * Voting middleware
  */
 exports.votingByID = function (req, res, next, id) {
@@ -97,7 +153,7 @@ exports.votingByID = function (req, res, next, id) {
         });
     }
 
-    Voting.findById(id).populate('user', 'displayName').exec(function (err, voting) {
+    Voting.findById(id).populate('user', 'title').exec(function (err, voting) {
         if (err) {
             return next(err);
         } else if (!voting) {
@@ -106,6 +162,27 @@ exports.votingByID = function (req, res, next, id) {
             });
         }
         req.voting = voting;
+        next();
+    });
+};
+
+exports.answerByID = function (req, res, next, id) {
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send({
+            message: 'Answer is invalid'
+        });
+    }
+
+    Answer.findById(id).populate('votes', 'title').exec(function (err, answer) {
+        if (err) {
+            return next(err);
+        } else if (!answer) {
+            return res.status(404).send({
+                message: 'No answer with that identifier has been found'
+            });
+        }
+        req.answer = answer;
         next();
     });
 };
