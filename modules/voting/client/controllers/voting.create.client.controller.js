@@ -20,6 +20,7 @@ angular.module('voting').controller('VotingCreateController', ['$scope', '$state
                 answers: this.answers,
                 answerType: this.answerType,
                 votingType: this.votingType,
+                maxAnswers: this.maxAnswers,
                 start: this.start,
                 end: this.end
             });
@@ -39,11 +40,22 @@ angular.module('voting').controller('VotingCreateController', ['$scope', '$state
             $scope.answer = {};
         };
 
-        $scope.removeOption = function (answer) {
+        $scope.removeAnswer = function (answer) {
             var answerIndex = $scope.answers.indexOf(answer);
             if (answerIndex !== -1) {
+                if ($scope.maxAnswers === $scope.answers.length) {
+                    $scope.maxAnswers--;
+                }
                 $scope.answers.splice(answerIndex, 1);
             }
+        };
+
+        $scope.changeVotingType = function (votingType) {
+            $scope.votingType = votingType;
+        };
+
+        $scope.changeAnswerType = function (answerType) {
+            $scope.answerType = answerType;
         };
 
         function initValues() {
@@ -51,6 +63,7 @@ angular.module('voting').controller('VotingCreateController', ['$scope', '$state
             $scope.answers = [];
             $scope.answerType = 'single';
             $scope.votingType = 'once-only';
+            $scope.maxAnswers = 0;
             $scope.start = Date.now();
             $scope.end = Date.now() + 7;
             $scope.answer = {};
