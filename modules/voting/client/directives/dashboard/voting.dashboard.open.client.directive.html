@@ -1,8 +1,9 @@
-<div class="panel">
-  <div class="panel-heading">
+<div class="panel panel-default">
+  <div class="panel-heading" data-ng-click="isCollapsed = !isCollapsed">
     <h1 class="panel-title">Open Votings</h1>
   </div>
-  <div class="panel-body">
+
+  <div class="panel-body" data-collapse="isCollapsed">
     <div class="list-group">
       <button data-ng-repeat="voting in votings"
               data-ng-bind="voting.title"
@@ -10,6 +11,9 @@
               class="list-group-item"></button>
     </div>
     <div class="container-fluid">
+      <div class="row" data-ng-if="chartData"
+           data-ui-chart="chartData" data-chart-options="chartOptions"></div>
+
       <div data-ng-repeat="answer in voting.answers" class="row">
         <div class="col-md-1">
           <span data-ng-bind="answer.title"></span>

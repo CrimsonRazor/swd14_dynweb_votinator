@@ -38,6 +38,13 @@ angular.module('voting')
 
             $scope.selectVoting = function (voting) {
                 $scope.voting = voting;
+                var chartData = [];
+
+                angular.forEach($scope.voting.answers, function (answer) {
+                    chartData.push([answer.title, (answer.votes && answer.votes.length) || 0]);
+                });
+
+                $scope.chartData = [chartData];
             };
 
             $scope.vote = function (answer) {
@@ -46,7 +53,26 @@ angular.module('voting')
                         _id: $scope.voting._id,
                         _answerId: answer._id
                     });
-            }
+            };
+
+            $scope.chartOptions = {
+                seriesDefaults: {
+                    renderer: jQuery.jqplot.PieRenderer,
+                    rendererOptions: {
+                        showDataLabels: true
+                    }
+                },
+                legend: {show: true, location: 's'}
+            };
+
+            $(window).on('resize', function () {
+                //Force redraw on resize
+                var chartData = $scope.chartData;
+                delete $scope.chartData;
+                $scope.$apply();
+                $scope.chartData = chartData;
+                $scope.$apply();
+            });
         }
     ])
     .controller('VotingDashboardClosedVotingsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Voting',
