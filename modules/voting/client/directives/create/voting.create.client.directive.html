@@ -19,6 +19,19 @@
                   ng-class="{'active':votingType === 'recurring'}" ng-click="changeVotingType('recurring')">Recurring</button>
         </div>
       </div>
+      <div class="form-group" ng-show="votingType === 'recurring'">
+        <!--<span class="input-group-addon">Wählen Sie wie viele Antworten maximal ausgewählt werden können</span>
+        <span class="input-group-addon">{{maxAnswers || 0}}</span>-->
+        <div ng-repeat="weekDay in recurrence.weekDays track by $index" style="display: inline-block; margin-right: 1em;" >
+          <input value="fdsfd" type="checkbox" class="form-control" ng-model="recurrence.weekDays[$index]" />
+          <br/>
+          <span>{{ $index | weekDayFilter }}</span>
+        </div>
+        <div style="display: inline-block">
+          <uib-timepicker ng-model="recurrenceTime" ng-change="timeChanged()"
+                          hour-step="1" minute-step="15" show-meridian="false"></uib-timepicker>
+        </div>
+      </div>
     </div>
 
     <div class="form-group">

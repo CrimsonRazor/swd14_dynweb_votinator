@@ -7,6 +7,7 @@ var path = require('path'),
     mongoose = require('mongoose'),
     Voting = mongoose.model('Voting'),
     Answer = mongoose.model('Answer'),
+    Recurring = mongoose.model('Recurring'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
