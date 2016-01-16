@@ -6,7 +6,7 @@ var Voting = mongoose.model('Voting');
 var Recurring = mongoose.model('Recurring');
 
 // TODO refactor this shit as fuck
-var NotificationService = function(voting) {
+var RecurringService = function(voting) {
     var hour = voting.recurrence.hourOfDay;
     var minute = voting.recurrence.minute;
     var weekDays = [1, 2, 3, 4, 5, 6, 7].filter(function(wd) {
@@ -22,4 +22,4 @@ var NotificationService = function(voting) {
     }, null, true);
 };
 
-exports.notificationService = NotificationService;
+exports.recurringService = RecurringService;

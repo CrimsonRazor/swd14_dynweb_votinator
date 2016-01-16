@@ -8,7 +8,7 @@ var path = require('path'),
     Voting = mongoose.model('Voting'),
     Answer = mongoose.model('Answer'),
     Recurring = mongoose.model('Recurring'),
-    notificationService = require(path.resolve("./modules/voting/server/services/voting.server.notifications")),
+    notificationService = require(path.resolve("./modules/voting/server/services/voting.server.recurring")),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
@@ -25,7 +25,7 @@ exports.create = function (req, res) {
             });
         } else {
             res.json(voting);
-            notificationService.notificationService(voting);
+            notificationService.recurringService(voting);
         }
     });
 };
