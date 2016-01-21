@@ -14,6 +14,16 @@ angular.module('voting').factory('Voting', ['$resource',
                 param: {
                     votingId: '@_id'
                 }
+            },
+            closedUser: {
+                url: 'api/votings/closed',
+                method: 'GET',
+                isArray: true
+            },
+            open: {
+                url: 'api/votings/open',
+                method: 'GET',
+                isArray: true
             }
         });
     }

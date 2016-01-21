@@ -18,7 +18,16 @@ exports.invokeRolesPolicies = function () {
             resources: '/api/votings',
             permissions: '*'
         }, {
+            resources: '/api/votings/open',
+            permissions: '*'
+        }, {
+            resources: '/api/votings/closed',
+            permissions: '*'
+        }, {
             resources: '/api/votings/:votingId',
+            permissions: '*'
+        }, {
+            resources: '/api/votings/:votingId/vote',
             permissions: '*'
         }]
     }, {
@@ -27,16 +36,22 @@ exports.invokeRolesPolicies = function () {
             resources: '/api/votings',
             permissions: ['get', 'post']
         }, {
+            resources: '/api/votings/open',
+            permissions: ['get']
+        }, {
+            resources: '/api/votings/closed',
+            permissions: ['get']
+        }, {
             resources: '/api/votings/:votingId',
             permissions: ['get']
         }, {
-            resources: '/api/votings/:votingId/vote/:answerId',
-            permissions: '*'
+            resources: '/api/votings/:votingId/vote',
+            permissions: ['post']
         }]
     }, {
         roles: ['guest'],
         allows: [{
-            resources: '/api/votings',
+            resources: '/api/votings/open',
             permissions: ['get']
         }, {
             resources: '/api/votings/:votingId',

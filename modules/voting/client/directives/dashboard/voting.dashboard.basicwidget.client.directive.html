@@ -1,16 +1,25 @@
 <div class="panel panel-primary">
-  <div class="panel-heading" data-ng-click="isCollapsed = !isCollapsed">
-    <h1 class="panel-title">My Votings
-      <a data-ui-sref="voting.create" class="btn btn-warning btn-xs" ng-if="showCreateLink">
-        <span class="glyphicon-plus"></span>
+  <div class="panel-heading">
+    <h1 class="panel-title pull-left">
+      <button class="btn btn-xs btn-info" data-ng-click="isCollapsed = !isCollapsed">
+        <span class="glyphicon"
+              data-ng-class="{'glyphicon-menu-down': isCollapsed, 'glyphicon-menu-up': !isCollapsed}"></span>
+      </button>
+      {{title}}
+      <a data-ui-sref="voting.create" class="btn btn-xs btn-warning" data-ng-if="showCreateLink">
+        <span class="glyphicon glyphicon-plus"></span>
       </a>
     </h1>
+    <button class="btn btn-info btn-xs pull-right" data-ng-click="refresh()">
+      <span class="glyphicon glyphicon-refresh"></span>
+    </button>
+    <div class="clearfix"></div>
   </div>
 
   <div class="panel-body" data-uib-collapse="isCollapsed">
-    <div class="container-fluid">
+    <div class="container-fluid" data-ng-if="votings.length">
       <div class="row">
-        <div class="col-md-4">
+        <div data-ng-class="{'col-md-12' : !chartDataShown, 'col-md-4': chartDataShown}">
           <div class="list-group">
             <button data-ng-repeat="voting in votings"
                     data-ng-bind="voting.title"
@@ -18,17 +27,16 @@
                     class="list-group-item"></button>
           </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" data-ng-if="chartData">
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-12">
-                <div data-ng-if="chartData"
-                     data-ui-chart="chartData" data-chart-options="chartOptions"></div>
+                <div data-ui-chart="chartData" data-chart-options="chartOptions"></div>
               </div>
             </div>
 
             <div data-ng-repeat="answer in voting.answers" class="row">
-              <div data-ng-class="{'vote' : 'col-md-10', '!vote' : 'col-md-12'}">
+              <div data-ng-class="{'col-md-10': vote ,'col-md-12': !vote}">
                 <span data-ng-bind="answer.title"></span>
                 {{answer}}
               </div>
@@ -40,6 +48,6 @@
         </div>
       </div>
     </div>
-
+    <h4 data-ng-if="!votings.length">No votings found in this category!</h4>
   </div>
 </div>

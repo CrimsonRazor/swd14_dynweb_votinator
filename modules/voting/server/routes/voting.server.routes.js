@@ -10,8 +10,16 @@ module.exports = function (app) {
     // Voting collection routes
     app.route('/api/votings')
         .all(votingPolicy.isAllowed)
-        .get(voting.list)
+        .get(voting.userList)
         .post(voting.create);
+
+    app.route('/api/votings/open')
+        .all(votingPolicy.isAllowed)
+        .get(voting.openList);
+
+    app.route('/api/votings/closed')
+        .all(votingPolicy.isAllowed)
+        .get(voting.closedUserList);
 
     // Single voting routes
     app.route('/api/votings/:votingId')

@@ -78,8 +78,8 @@ exports.delete = function (req, res) {
 /**
  * List of votings
  */
-exports.list = function (req, res) {
-    Voting.find().sort('-created').populate('user', 'displayName').exec(function (err, votings) {
+function list(filter, req, res) {
+    Voting.find(filter).sort('-created').populate('user', 'displayName').exec(function (err, votings) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -88,6 +88,28 @@ exports.list = function (req, res) {
             res.json(votings);
         }
     });
+}
+
+exports.userList = function (req, res) {
+    if (!req.user || !req.user.id) {
+        res.status(401).send("You are not authorized to request this resource!");
+        return;
+    }
+
+    list({'user': req.user.id, 'end': {$gt: Date.now()}}, req, res);
+};
+
+exports.closedUserList = function (req, res) {
+    if (!req.user || !req.user.id) {
+        res.status(401).send("You are not authorized to request this resource!");
+        return;
+    }
+
+    list({'user': req.user.id, 'end': {$lte: Date.now()}}, req, res);
+};
+
+exports.openList = function (req, res) {
+    list({'end': {$gt: Date.now()}}, req, res);
 };
 
 /**

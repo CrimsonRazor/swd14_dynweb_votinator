@@ -1,5 +1,5 @@
 <section>
-  <open-votings></open-votings>
-  <my-votings ng-if="authentication.user._id"></my-votings>
-  <closed-votings ng-if="authentication.user._id"></closed-votings>
+  <div data-open-votings data-is-collapsed="false"></div>
+  <div data-my-votings data-ng-if="authentication.user._id" data-is-collapsed="true"></div>
+  <div data-closed-votings data-ng-if="authentication.user._id" data-is-collapsed="true"></div>
 </section>

@@ -9,19 +9,28 @@ angular.module('voting')
     })
     .directive('openVotings', function () {
         return {
-            templateUrl: "modules/voting/client/directives/dashboard/voting.dashboard.open.client.directive.html",
+            templateUrl: "modules/voting/client/directives/dashboard/voting.dashboard.basicwidget.client.directive.html",
+            scope: {
+                isCollapsed: '=isCollapsed'
+            },
             controller: "VotingDashboardOpenVotingsController"
         };
     })
     .directive('closedVotings', function () {
         return {
-            templateUrl: "modules/voting/client/directives/dashboard/voting.dashboard.closed.client.directive.html",
+            templateUrl: "modules/voting/client/directives/dashboard/voting.dashboard.basicwidget.client.directive.html",
+            scope: {
+                isCollapsed: '=isCollapsed'
+            },
             controller: "VotingDashboardClosedVotingsController"
         };
     })
     .directive('myVotings', function () {
         return {
-            templateUrl: "modules/voting/client/directives/dashboard/voting.dashboard.myvotings.client.directive.html",
+            templateUrl: "modules/voting/client/directives/dashboard/voting.dashboard.basicwidget.client.directive.html",
+            scope: {
+                isCollapsed: '=isCollapsed'
+            },
             controller: "VotingDashboardMyVotingsController"
         };
     });
