@@ -19,9 +19,9 @@ const answerTypeEnum = {
  * Recurring Schema
  */
 var RecurringSchema = new Schema({
-    weekDays: [{type: Boolean, default: false, required: 'WeekDays cannot be blank'}],
-    hourOfDay: {type: Number, min: 0, max: 23, required: 'Hour of day cannot be blank'},
-    minute: {type: Number, min: 0, max: 59, required: 'Minute cannot be blank'}
+    hour: {type: Number, min: 0, max: 23, required: 'Hour cannot be blank'},
+    minute: {type: Number, min: 0, max: 59, required: 'Minute cannot be blank'},
+    weekDays: [{type: Boolean, default: false, required: 'WeekDays cannot be blank'}]
 });
 
 /**

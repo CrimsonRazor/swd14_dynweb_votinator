@@ -60,7 +60,7 @@ angular.module('voting').controller('VotingCreateController', ['$scope', '$state
         };
 
         $scope.timeChanged = function () {
-            $scope.recurrence.hourOfDay = $scope.reccurrenceTime.getHours();
+            $scope.recurrence.hour = $scope.reccurrenceTime.getHours();
             $scope.recurrence.minute = $scope.reccurrenceTime.getMinutes();
         };
 
@@ -71,14 +71,19 @@ angular.module('voting').controller('VotingCreateController', ['$scope', '$state
             $scope.votingType = 'once-only';
             $scope.maxAnswers = 0;
             $scope.start = Date.now();
-            $scope.end = Date.now() + 7;
+            $scope.end = addDays(new Date(), 7).getTime();
             $scope.recurrence = {
-                "weekDays": [false, false, false, false, false, false, false],
-                "hourOfDay": 0,
-                "minute": 0
+                "hour": 0,
+                "minute": 0,
+                "weekDays": [false, false, false, false, false, false, false]
             };
             $scope.answer = {};
             $scope.reccurrenceTime = new Date();
+        }
+
+        function addDays(date, days) {
+            date.setDate(date.getDate() + days);
+            return date;
         }
     }
 ]);
