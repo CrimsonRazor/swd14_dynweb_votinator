@@ -97,6 +97,9 @@ var UserSchema = new Schema({
   },
   resetPasswordExpires: {
     type: Date
+  },
+  activationToken: {
+    type: String
   }
 });
 
@@ -142,7 +145,8 @@ UserSchema.methods.hashPassword = function (password) {
  * Create instance method for authenticating user
  */
 UserSchema.methods.authenticate = function (password) {
-  return this.password === this.hashPassword(password);
+  return this.password === this.hashPassword(password)
+      && this.activationToken == undefined;
 };
 
 /**

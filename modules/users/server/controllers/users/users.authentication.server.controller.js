@@ -7,6 +7,8 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   mongoose = require('mongoose'),
   passport = require('passport'),
+  crypto = require('crypto'),
+  async = require('async'),
   User = mongoose.model('User');
 
 // URLs for which user can't be redirected on signin
@@ -30,25 +32,46 @@ exports.signup = function (req, res) {
   user.provider = 'local';
   user.displayName = user.firstName + ' ' + user.lastName;
 
-  // Then save the user
-  user.save(function (err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
+  async.waterfall([
+    // Generate random token
+    function (done) {
+      crypto.randomBytes(20, function (err, buffer) {
+        var token = buffer.toString('hex');
+        done(err, token);
       });
-    } else {
-      // Remove sensitive data before login
-      user.password = undefined;
-      user.salt = undefined;
-
-      req.login(user, function (err) {
+    },
+    function (token, done) {
+      user.activationToken = token;
+      user.save(function (err) {
         if (err) {
-          res.status(400).send(err);
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
         } else {
-          res.json(user);
+          user.password = undefined;
+          user.salt = undefined;
+
+          res.json(token);
+          done(err);
         }
       });
     }
+  ]);
+};
+
+exports.activate = function(req, res) {
+  User.findOne({
+    activationToken: req.params.token
+  }, function (err, user) {
+    user.activationToken = undefined;
+    user.save();
+    req.login(user, function (err) {
+      if (err) {
+        res.status(400).send(err);
+      } else {
+        res.json(user);
+      }
+    })
   });
 };
 
