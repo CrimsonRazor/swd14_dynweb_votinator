@@ -20,10 +20,8 @@
         </div>
       </div>
       <div class="form-group" ng-show="votingType === 'recurring'">
-        <!--<span class="input-group-addon">Wählen Sie wie viele Antworten maximal ausgewählt werden können</span>
-        <span class="input-group-addon">{{maxAnswers || 0}}</span>-->
         <div ng-repeat="weekDay in recurrence.weekDays track by $index" style="display: inline-block; margin-right: 1em;" >
-          <input value="fdsfd" type="checkbox" class="form-control" ng-model="recurrence.weekDays[$index]" />
+          <input type="checkbox" class="form-control" ng-model="recurrence.weekDays[$index]" />
           <br/>
           <span>{{ $index | weekDayFilter }}</span>
         </div>

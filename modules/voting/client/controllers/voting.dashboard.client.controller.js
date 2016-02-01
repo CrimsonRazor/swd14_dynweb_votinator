@@ -29,13 +29,7 @@ angular.module('voting')
     .controller('VotingDashboardOpenVotingsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Voting',
         function ($scope, $stateParams, $location, Authentication, Voting) {
             dashboardWidgetTemplate($scope, 'Open Votings', Authentication, Voting.open);
-            $scope.vote = function (answer) {
-                Voting.vote({},
-                    {
-                        _id: $scope.voting._id,
-                        _answerId: answer._id
-                    });
-            };
+            votingTemplate($scope, Voting);
         }
     ])
     .controller('VotingDashboardClosedVotingsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Voting',
@@ -46,17 +40,36 @@ angular.module('voting')
     .controller('VotingDashboardMyVotingsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Voting',
         function ($scope, $stateParams, $location, Authentication, Voting) {
             dashboardWidgetTemplate($scope, 'My Votings', Authentication, Voting.query);
-            $scope.vote = function (answer) {
-                Voting.vote({},
-                    {
-                        _id: $scope.voting._id,
-                        _answerId: answer._id
-                    });
-            };
+            votingTemplate($scope, Voting);
 
             $scope.showCreateLink = true;
         }
     ]);
+
+function votingTemplate($scope, Voting) {
+    $scope.answers = {};
+    $scope.vote = function (answers) {
+        var answerIds = parseAnswers(answers);
+        Voting.vote({},
+            {
+                _id: $scope.voting._id,
+                _answerId: answerIds
+            });
+        $scope.voting.hasVoted = true;
+    };
+}
+
+function parseAnswers(answers) {
+    var answerIds = [];
+    if (answers instanceof Array) {
+        for (var answer in answers) if (answers[answer]) answerIds.push(answer);
+        return answerIds;
+    } else {
+        answerIds.push(answers._id);
+    }
+
+    return answerIds;
+}
 
 function dashboardWidgetTemplate($scope, title, Authentication, votingResource) {
     $scope.title = title;
@@ -65,6 +78,15 @@ function dashboardWidgetTemplate($scope, title, Authentication, votingResource) 
     var load = function () {
         votingResource().$promise.then(function (votings) {
             $scope.votings = votings;
+            $scope.votings.forEach(function (voting) {
+                var userId = Authentication.user._id;
+                voting.answers.forEach(function (answer) {
+                    if (answer.votes.indexOf(userId) !== -1) {
+                        voting.hasVoted = true;
+                        return;
+                    }
+                })
+            });
         });
     };
 

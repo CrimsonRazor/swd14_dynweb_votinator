@@ -46,6 +46,9 @@ var VotingSchema = new Schema({
         required: 'Title cannot be blank'
     },
     answers: [AnswerSchema],
+    maxAnswers: {
+        type: Number
+    },
     answerType: {
         type: String,
         enum: answerTypeEnum

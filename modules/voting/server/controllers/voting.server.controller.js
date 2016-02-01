@@ -116,8 +116,17 @@ exports.openList = function (req, res) {
  * Voting function
  */
 exports.vote = function (req, res) {
-    var voting = req.voting;
-    var answerId = req.body._answerId;
+    Voting.findById(req.voting, function (err, voting) {
+        if (voting.answerType === 'single') {
+            voteSingle(voting, req, res);
+        } else {
+            voteMultiple(voting, req, res);
+        }
+    });
+};
+
+function voteSingle(voting, req, res) {
+    var answerId = req.body._answerId[0];
 
     if (!mongoose.Types.ObjectId.isValid(answerId)) {
         return res.status(400).send({
@@ -126,7 +135,6 @@ exports.vote = function (req, res) {
     }
 
     var foundAnswer;
-
     voting.answers.forEach(function (answer) {
         if (answer._id == answerId) {
             foundAnswer = answer;
@@ -165,7 +173,48 @@ exports.vote = function (req, res) {
         }
 
     });
-};
+}
+
+function voteMultiple(voting, req, res) {
+    var answerIds = req.body._answerId;
+
+    if (answerIds.length > voting.maxAnswers) {
+        return res.status(400).send({
+            message: 'Too many answers for this voting'
+        });
+    }
+
+    var foundAnswers = voting.answers.filter(function(answer) {
+        return answerIds.indexOf(answer._id.toString()) !== -1;
+    });
+
+    Voting.count({_id: voting._id, 'answers.votes': req.user.id}, function (err, count) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            if (count != 0) {
+                res.status(400).send({
+                    message: 'You already voted! Please remove your vote first.'
+                });
+            } else {
+                foundAnswers.forEach(function(answer) {
+                    answer.votes.push(req.user.id);
+                });
+                voting.save(function (err) {
+                    if (err) {
+                        return res.status(400).send({
+                            message: errorHandler.getErrorMessage(err)
+                        });
+                    } else {
+                        res.status(200).send();
+                    }
+                });
+            }
+        }
+    });
+}
 
 /**
  * Voting middleware

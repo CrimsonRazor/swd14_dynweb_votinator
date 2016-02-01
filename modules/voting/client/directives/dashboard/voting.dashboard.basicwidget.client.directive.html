@@ -35,13 +35,29 @@
               </div>
             </div>
 
-            <div data-ng-repeat="answer in voting.answers" class="row">
-              <div data-ng-class="{'col-md-10': vote ,'col-md-12': !vote}">
-                <span data-ng-bind="answer.title"></span>
-                {{answer}}
+            <div ng-if="!voting.hasVoted" class="row">
+              <div ng-if="voting.answerType === 'single'">
+                <div data-ng-repeat="answer in voting.answers"
+                     class="col-md-4 col-xs-4">
+                  <div data-ng-class="{'col-md-10': vote ,'col-md-12': !vote}">
+                    <span data-ng-bind="answer.title"></span>
+                  </div>
+                  <div class="col-md-2" data-ng-if="vote">
+                    <button class="btn btn-primary" data-ng-click="vote(answer)">Vote!</button>
+                  </div>
+                </div>
               </div>
-              <div class="col-md-2" data-ng-if="vote">
-                <button class="btn btn-primary" data-ng-click="vote(answer)">Vote!</button>
+
+              <div ng-if="voting.answerType === 'multiple'">
+                <div data-ng-repeat="answer in voting.answers"
+                     class="col-md-4 col-xs-4">
+                  <span data-ng-bind="answer.title"></span>
+                  <input type="checkbox" class="form-control"
+                         ng-model="answers[answer._id]"
+                         ng-disabled="!answers[answer._id] && Object.keys(answers).length < voting.maxAnswers ">
+                </div>
+
+                <button ng-if="voting.answerType === 'multiple'" class="btn btn-primary" data-ng-click="vote(answers)">Vote!</button>
               </div>
             </div>
           </div>
