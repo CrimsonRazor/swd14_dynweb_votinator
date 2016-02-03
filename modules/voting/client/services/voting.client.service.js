@@ -24,6 +24,18 @@ angular.module('voting').factory('Voting', ['$resource',
                 url: 'api/votings/open',
                 method: 'GET',
                 isArray: true
+            },
+            unapprovedScripts: {
+                url: '/api/votings/scripts',
+                method: 'GET',
+                isArray: true
+            },
+            updateScript: {
+                url: '/api/votings/scripts/:scriptId',
+                param: {
+                    scriptId: '@scriptId'
+                },
+                method: 'PUT'
             }
         });
     }

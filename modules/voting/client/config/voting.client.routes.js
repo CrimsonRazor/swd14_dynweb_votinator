@@ -11,7 +11,10 @@ angular.module('voting').config(['$stateProvider',
             .state('voting.list', {
                 url: '',
                 controller: 'VotingListController',
-                templateUrl: 'modules/voting/client/views/list-votings.client.view.html'
+                templateUrl: 'modules/voting/client/views/list-votings.client.view.html',
+                data: {
+                    roles: ['user', 'admin']
+                }
             })
             .state('voting.create', {
                 url: '/create',
@@ -24,7 +27,10 @@ angular.module('voting').config(['$stateProvider',
             .state('voting.view', {
                 url: '/:votingId',
                 controller: 'VotingController',
-                templateUrl: 'modules/voting/client/views/view-voting.client.view.html'
+                templateUrl: 'modules/voting/client/views/view-voting.client.view.html',
+                data: {
+                    roles: ['user', 'admin']
+                }
             })
             .state('voting.edit', {
                 url: '/:votingId/edit',
@@ -32,6 +38,14 @@ angular.module('voting').config(['$stateProvider',
                 templateUrl: 'modules/voting/client/views/edit-voting.client.view.html',
                 data: {
                     roles: ['user', 'admin']
+                }
+            })
+            .state('voting.scripts', {
+                url: '/scripts',
+                controller: 'VotingScriptController',
+                templateUrl: 'modules/voting/client/views/list-voting-scripts.client.view.html',
+                data: {
+                    roles: ['admin']
                 }
             });
     }

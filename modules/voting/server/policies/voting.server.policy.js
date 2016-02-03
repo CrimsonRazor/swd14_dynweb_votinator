@@ -29,6 +29,9 @@ exports.invokeRolesPolicies = function () {
         }, {
             resources: '/api/votings/:votingId/vote',
             permissions: '*'
+        }, {
+            resources: '/api/votings/scripts',
+            permissions: '*'
         }]
     }, {
         roles: ['user'],
@@ -47,6 +50,9 @@ exports.invokeRolesPolicies = function () {
         }, {
             resources: '/api/votings/:votingId/vote',
             permissions: ['post']
+        }, {
+            resources: '/api/votings/scripts/:scriptId',
+            permissions: ['get', 'put']
         }]
     }, {
         roles: ['guest'],

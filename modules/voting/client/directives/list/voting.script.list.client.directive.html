@@ -1,0 +1,32 @@
+<div ng-init="find()">
+  <ul class="list-group col-md-5 pull-left">
+    <li class="list-group-item selectable"
+        ng-repeat="voting in votings"
+        ng-class="{'active': voting.selected}">
+      <span class="voting-script-list-title"
+            ng-click="voting.isCollapsed = !voting.isCollapsed">{{ voting.title }}</span>
+      <div data-uib-collapse="voting.isCollapsed">
+        <ul class="list-group">
+          <li class="list-group-item selectable"
+              data-ng-repeat="unapprovedAnswer in voting.answers | filter:{'dynamicGenerationScript' : {'adminApproved' : false}}"
+              data-ng-class="{'active': unapprovedAnswer.selected}"
+              data-ng-click="selectAnswer(unapprovedAnswer)">
+            Script for answer: {{unapprovedAnswer._id}}
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+
+  <div class="pull-right col-md-7" data-ng-show="selectedAnswer">
+    <label>
+      Script for answer: {{selectedAnswer._id}}<br/>
+      <textarea data-ng-model="selectedAnswer.dynamicGenerationScript.script"></textarea>
+    </label>
+    <br/>
+    <button data-ng-click="updateScript(false)">Update only</button>
+    <button data-ng-click="updateScript(true)">Update & Approve</button>
+  </div>
+</div>
+
+

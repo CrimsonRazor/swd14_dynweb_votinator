@@ -37,8 +37,15 @@ angular.module('voting').controller('VotingCreateController', ['$scope', '$state
         };
 
         $scope.addAnswer = function (answer) {
+            delete answer.dynamicGenerationScript;
             $scope.answers.push(answer);
-            $scope.answer = {};
+            $scope.answer = {dynamicGenerationScript: {}};
+        };
+
+        $scope.addScriptAnswer = function (answer) {
+            delete answer.title;
+            $scope.answers.push(answer);
+            $scope.answer = {dynamicGenerationScript: {}};
         };
 
         $scope.removeAnswer = function (answer) {
@@ -77,7 +84,7 @@ angular.module('voting').controller('VotingCreateController', ['$scope', '$state
                 "minute": 0,
                 "weekDays": [false, false, false, false, false, false, false]
             };
-            $scope.answer = {};
+            $scope.answer = {dynamicGenerationScript: {}};
             $scope.reccurrenceTime = new Date();
         }
 

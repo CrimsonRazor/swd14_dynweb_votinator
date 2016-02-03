@@ -5,11 +5,18 @@
  */
 var path = require('path'),
     mongoose = require('mongoose'),
+    crypto = require('crypto'),
     Voting = mongoose.model('Voting'),
     Answer = mongoose.model('Answer'),
     Recurring = mongoose.model('Recurring'),
+    DynamicGenerationScript = mongoose.model('DynamicGenerationScript'),
     notificationService = require(path.resolve("./modules/voting/server/services/voting.server.recurring")),
+    scriptRunnerService = require(path.resolve("./modules/voting/server/services/voting.server.scriptrunner")),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
+
+function hash(o) {
+    return crypto.createHash('sha256').update(o).digest("hex");
+}
 
 /**
  * Create a article
@@ -18,6 +25,15 @@ exports.create = function (req, res) {
     var voting = new Voting(req.body);
     voting.user = req.user;
 
+    var answers = voting.answers;
+    for (var i = 0; i < answers.length; i++) {
+        if (answers[i].dynamicGenerationScript) {
+            //Security issue: Always explicitly set scripts to not approved
+            answers[i].dynamicGenerationScript.adminApproved = false;
+            answers[i].dynamicGenerationScript.hash = hash(answers[i].dynamicGenerationScript.script);
+        }
+    }
+
     voting.save(function (err) {
         if (err) {
             return res.status(400).send({
@@ -25,7 +41,9 @@ exports.create = function (req, res) {
             });
         } else {
             res.json(voting);
-            notificationService.recurringService(voting);
+            if (voting.recurrence) {
+                notificationService.recurringService(voting);
+            }
         }
     });
 };
@@ -35,6 +53,13 @@ exports.create = function (req, res) {
  */
 exports.read = function (req, res) {
     res.json(req.voting);
+};
+
+/**
+ * Show the current script
+ */
+exports.readScript = function (req, res) {
+    res.json(req.script);
 };
 
 /**
@@ -54,6 +79,80 @@ exports.update = function (req, res) {
             });
         } else {
             res.json(voting);
+        }
+    });
+};
+
+function executeScriptsIfNecessary(answers) {
+    var scriptsToRun = {};
+    var generationScript;
+
+    for (var i = 0; i < answers.length; i++) {
+        generationScript = answers[i].dynamicGenerationScript;
+        //When unapproved script found -> return
+        if (generationScript) {
+            if (!generationScript.adminApproved) {
+                return;
+            } else {
+                scriptsToRun[generationScript._id] = generationScript.script;
+            }
+        }
+    }
+
+    var scriptResults = scriptRunnerService.runScripts(scriptsToRun);
+
+    for (var i = 0; i < answers.length; i++) {
+        generationScript = answers[i].dynamicGenerationScript;
+        if (generationScript && scriptResults[generationScript._id]) {
+            answers[i].title = scriptResults[generationScript._id];
+        }
+    }
+
+}
+
+/**
+ * Update a script
+ */
+exports.updateScript = function (req, res) {
+    var voting = req.votingScript;
+    var script = req.body;
+    var scriptToUpdate;
+
+
+    for (var i = 0; i < voting.answers.length; i++) {
+        var dynScript = voting.answers[i].dynamicGenerationScript;
+        if (dynScript && dynScript.id === req.scriptId) {
+            scriptToUpdate = dynScript;
+            break;
+        }
+    }
+
+    script.hash = hash(script.script);
+
+    var isNotAdmin = req.user.roles.indexOf('admin') === -1;
+
+    //Only admins may change the approval
+    if (isNotAdmin) {
+        //Reset the approval if the script changes
+        if (scriptToUpdate.hash !== script.hash) {
+            scriptToUpdate.adminApproved = false;
+        }
+    } else {
+        scriptToUpdate.adminApproved = script.adminApproved;
+    }
+
+    scriptToUpdate.hash = script.hash;
+    scriptToUpdate.script = script.script;
+
+    executeScriptsIfNecessary(voting.answers);
+
+    voting.save(function (err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(scriptToUpdate);
         }
     });
 };
@@ -109,7 +208,18 @@ exports.closedUserList = function (req, res) {
 };
 
 exports.openList = function (req, res) {
-    list({'end': {$gt: Date.now()}}, req, res);
+    list({'end': {$gt: Date.now()}, 'answers.dynamicGenerationScript.adminApproved': {$exists: false}}, req, res);
+};
+
+exports.unapprovedScripts = function (req, res) {
+    Voting.find({'answers.dynamicGenerationScript.adminApproved': false}, function (err, votings) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        }
+        res.status(200).json(votings);
+    });
 };
 
 /**
@@ -184,7 +294,7 @@ function voteMultiple(voting, req, res) {
         });
     }
 
-    var foundAnswers = voting.answers.filter(function(answer) {
+    var foundAnswers = voting.answers.filter(function (answer) {
         return answerIds.indexOf(answer._id.toString()) !== -1;
     });
 
@@ -199,7 +309,7 @@ function voteMultiple(voting, req, res) {
                     message: 'You already voted! Please remove your vote first.'
                 });
             } else {
-                foundAnswers.forEach(function(answer) {
+                foundAnswers.forEach(function (answer) {
                     answer.votes.push(req.user.id);
                 });
                 voting.save(function (err) {
@@ -257,6 +367,29 @@ exports.answerByID = function (req, res, next, id) {
             });
         }
         req.answer = answer;
+        next();
+    });
+};
+
+exports.scriptByID = function (req, res, next, id) {
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send({
+            message: 'Script is invalid'
+        });
+    }
+
+    Voting.find({'answers.dynamicGenerationScript._id': id}).exec(function (err, voting) {
+        if (err) {
+            return next(err);
+        } else if (!voting) {
+            return res.status(404).send({
+                message: 'No script with that identifier has been found'
+            });
+        }
+
+        req.votingScript = voting[0];
+        req.scriptId = id;
         next();
     });
 };

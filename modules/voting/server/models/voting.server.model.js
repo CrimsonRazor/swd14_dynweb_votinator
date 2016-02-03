@@ -25,10 +25,20 @@ var RecurringSchema = new Schema({
 });
 
 /**
+ * Dynamic Generation Script
+ */
+var DynamicGenerationScriptSchema = new Schema({
+    script: {type: String, required: 'Script cannot be blank', trim: true},
+    hash: {type: String, required: true},
+    adminApproved: {type: Boolean, default: false}
+});
+
+/**
  * Answer Schema
  */
 var AnswerSchema = new Schema({
-    title: {type: String, required: 'Answer cannot be blank'},
+    title: {type: String},
+    dynamicGenerationScript: {type: DynamicGenerationScriptSchema},
     votes: [Schema.ObjectId]
 });
 
@@ -75,6 +85,7 @@ var VotingSchema = new Schema({
     }
 });
 
-mongoose.model('Voting', VotingSchema);
+mongoose.model('DynamicGenerationScript', DynamicGenerationScriptSchema);
 mongoose.model('Answer', AnswerSchema);
 mongoose.model('Recurring', RecurringSchema);
+mongoose.model('Voting', VotingSchema);

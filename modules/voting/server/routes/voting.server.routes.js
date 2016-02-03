@@ -7,6 +7,16 @@ var votingPolicy = require('../policies/voting.server.policy'),
     voting = require('../controllers/voting.server.controller');
 
 module.exports = function (app) {
+    //Script approval
+    app.route('/api/votings/scripts')
+        .all(votingPolicy.isAllowed)
+        .get(voting.unapprovedScripts);
+
+    app.route('/api/votings/scripts/:scriptId')
+        .all(votingPolicy.isAllowed)
+        .get(voting.readScript)
+        .put(voting.updateScript);
+
     // Voting collection routes
     app.route('/api/votings')
         .all(votingPolicy.isAllowed)
@@ -32,9 +42,10 @@ module.exports = function (app) {
     app.route('/api/votings/:votingId/vote')
         .all(votingPolicy.isAllowed)
         .post(voting.vote);
-        //.put(voting.updateVote)
-        //.delete(voting.deleteVote);
+    //.put(voting.updateVote)
+    //.delete(voting.deleteVote);
 
-    // Finish by binding the voting middleware
+    // Finish by binding the variables middleware
     app.param('votingId', voting.votingByID);
+    app.param('scriptId', voting.scriptByID);
 };
