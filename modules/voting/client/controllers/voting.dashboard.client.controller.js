@@ -57,6 +57,16 @@ function votingTemplate($scope, Voting) {
             });
         $scope.voting.hasVoted = true;
     };
+
+    $scope.deleteVoting = function (voting) {
+        var index = $scope.votings.indexOf(voting);
+        Voting.delete({},
+            {
+                _id: voting._id
+            }).$promise.then(function() {
+            $scope.votings.splice(index, 1);
+        });
+    };
 }
 
 function parseAnswers(answers) {

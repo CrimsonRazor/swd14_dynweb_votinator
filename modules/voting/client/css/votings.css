@@ -17,3 +17,11 @@
 .selectable {
     cursor: pointer;
 }
+
+.list-group-item-overflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 90%;
+    display: inline-block;
+}

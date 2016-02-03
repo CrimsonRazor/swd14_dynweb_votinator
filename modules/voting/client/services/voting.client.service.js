@@ -8,6 +8,13 @@ angular.module('voting').factory('Voting', ['$resource',
             update: {
                 method: 'PUT'
             },
+            delete: {
+                method: 'DELETE',
+                url: 'api/votings/:votingId',
+                param: {
+                    votingId: '@_id'
+                }
+            },
             vote: {
                 method: 'POST',
                 url: 'api/votings/:votingId/vote',
