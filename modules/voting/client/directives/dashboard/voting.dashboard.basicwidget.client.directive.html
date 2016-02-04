@@ -47,15 +47,12 @@
 
             <div ng-if="!voting.hasVoted" class="row">
               <div ng-if="voting.answerType === 'single'">
-                <div data-ng-repeat="answer in voting.answers"
-                     class="col-md-4 col-xs-4">
-                  <div data-ng-class="{'col-md-10': vote ,'col-md-12': !vote}">
-                    <span data-ng-bind="answer.title"></span>
+                  <div class="btn-group" role="group" data-ng-if="vote">
+                    <div data-ng-repeat="answer in voting.answers"
+                         class="btn-group col-md-4 col-sm-4 col-xs-6" role="group">
+                      <button type="button" class="btn btn-default btn-block" data-ng-click="vote(answer)">{{answer.title}}</button>
+                    </div>
                   </div>
-                  <div class="col-md-2" data-ng-if="vote">
-                    <button class="btn btn-primary" data-ng-click="vote(answer)">Vote!</button>
-                  </div>
-                </div>
               </div>
 
               <div ng-if="voting.answerType === 'multiple'">
