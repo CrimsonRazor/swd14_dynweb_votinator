@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('voting').controller('VotingEditController', ['$scope', '$stateParams', '$location', 'Authentication', 'Voting',
-    function ($scope, $stateParams, $location, Authentication, Voting) {
+angular.module('voting').controller('VotingEditController', ['$scope', '$state', '$stateParams', 'Authentication', 'Voting',
+    function ($scope, $state, $stateParams, Authentication, Voting) {
         $scope.authentication = Authentication;
         var votingId = $stateParams.votingId;
 
@@ -26,6 +26,8 @@ angular.module('voting').controller('VotingEditController', ['$scope', '$statePa
                 start: this.start,
                 end: this.end,
                 recurrence: this.recurrence
+            }).$promise.then(function() {
+                $state.go('home');
             });
         };
 

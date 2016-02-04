@@ -75,11 +75,14 @@ function votingTemplate($scope, $location, Voting) {
 
 function parseAnswers(answers) {
     var answerIds = [];
-    if (answers instanceof Array) {
-        for (var answer in answers) if (answers[answer]) answerIds.push(answer);
-        return answerIds;
-    } else {
+    if (answers.hasOwnProperty("_id")) {
         answerIds.push(answers._id);
+    } else {
+        for (var answer in answers) {
+            if (answers[answer]) {
+                answerIds.push(answer);
+            }
+        }
     }
 
     return answerIds;
