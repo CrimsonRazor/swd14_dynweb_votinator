@@ -63,12 +63,6 @@ exports.activate = function (req, res) {
     User.findOne({
         activationToken: req.params.token
     }, function (err, user) {
-        if (err) {
-            res.status(400).send(err);
-        } else {
-            res.json(user);
-        }
-
         user.activationToken = undefined;
         user.save();
         req.login(user, function (err) {
