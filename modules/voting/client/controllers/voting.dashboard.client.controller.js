@@ -58,6 +58,15 @@ function votingTemplate($scope, $location, Voting) {
         $scope.voting.hasVoted = true;
     };
 
+    $scope.unvote = function() {
+        Voting.unvote({},
+            {
+                _id: $scope.voting._id
+            }).$promise.then(function(result) {
+            $scope.voting.hasVoted = false;
+        });
+    };
+
     $scope.editVoting = function(voting) {
         $location.path("voting/" + voting._id + "/edit").replace();
     };

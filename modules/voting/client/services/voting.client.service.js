@@ -22,6 +22,10 @@ angular.module('voting').factory('Voting', ['$resource',
                     votingId: '@_id'
                 }
             },
+            unvote: {
+                method: 'GET',
+                url: 'api/votings/:votingId/unvote'
+            },
             closedUser: {
                 url: 'api/votings/closed',
                 method: 'GET',

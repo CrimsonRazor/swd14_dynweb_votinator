@@ -42,6 +42,10 @@ module.exports = function (app) {
     app.route('/api/votings/:votingId/vote')
         .all(votingPolicy.isAllowed)
         .post(voting.vote);
+
+    app.route('/api/votings/:votingId/unvote')
+        .all(votingPolicy.isAllowed)
+        .get(voting.unvote);
     //.put(voting.updateVote)
     //.delete(voting.deleteVote);
 

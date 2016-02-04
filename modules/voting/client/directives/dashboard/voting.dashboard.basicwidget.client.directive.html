@@ -67,6 +67,9 @@
                 <button ng-if="voting.answerType === 'multiple'" class="btn btn-primary" data-ng-click="vote(answers)">Vote!</button>
               </div>
             </div>
+            <button type="button" class="btn btn-danger row"
+                    data-ng-if="voting.hasVoted"
+                    data-ng-click="unvote()">Unvote!</button>
           </div>
         </div>
       </div>

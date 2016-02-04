@@ -230,6 +230,26 @@ exports.unapprovedScripts = function (req, res) {
     });
 };
 
+
+exports.unvote = function(req, res) {
+    Voting.findById(req.voting, function (err, voting) {
+        voting.answers.forEach(function(answer) {
+            var voteIndex = answer.votes.indexOf(req.user.id);
+            answer.votes.splice(voteIndex, 1);
+        });
+        voting.save(function(err) {
+            if (err) {
+                console.log(err);
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            } else {
+                res.status(200).send();
+            }
+        });
+    });
+};
+
 /**
  * Voting function
  */
