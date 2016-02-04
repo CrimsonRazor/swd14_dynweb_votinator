@@ -6,7 +6,7 @@ angular.module('users').controller('ActivationController', ['$scope', '$state', 
         $http.get('/api/auth/activate/' + $stateParams.token).success(function(response) {
             $scope.success = true;
             Authentication.user = response;
-            $state.go('home', $state.previous.params);
+            $state.go('home', null, {reload: true});
         });
     }
 ]);

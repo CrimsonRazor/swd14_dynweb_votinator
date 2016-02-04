@@ -106,6 +106,10 @@ function dashboardWidgetTemplate($scope, title, Authentication, votingResource) 
             $scope.votings = votings;
             $scope.votings.forEach(function (voting) {
                 var userId = Authentication.user._id;
+                if (userId === voting.user._id) {
+                    voting.canDelete = true;
+                    voting.canEdit = true;
+                }
                 voting.answers.forEach(function (answer) {
                     if (answer.votes.indexOf(userId) !== -1) {
                         voting.hasVoted = true;
