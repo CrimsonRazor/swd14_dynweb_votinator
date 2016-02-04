@@ -34,7 +34,7 @@ angular.module('voting').config(['$stateProvider',
             })
             .state('voting.edit', {
                 url: '/:votingId/edit',
-                controller: 'VotingController',
+                controller: 'VotingEditController',
                 templateUrl: 'modules/voting/client/views/edit-voting.client.view.html',
                 data: {
                     roles: ['user', 'admin']

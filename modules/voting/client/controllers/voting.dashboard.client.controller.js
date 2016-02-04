@@ -29,7 +29,7 @@ angular.module('voting')
     .controller('VotingDashboardOpenVotingsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Voting',
         function ($scope, $stateParams, $location, Authentication, Voting) {
             dashboardWidgetTemplate($scope, 'Open Votings', Authentication, Voting.open);
-            votingTemplate($scope, Voting);
+            votingTemplate($scope, $location, Voting);
         }
     ])
     .controller('VotingDashboardClosedVotingsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Voting',
@@ -40,13 +40,13 @@ angular.module('voting')
     .controller('VotingDashboardMyVotingsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Voting',
         function ($scope, $stateParams, $location, Authentication, Voting) {
             dashboardWidgetTemplate($scope, 'My Votings', Authentication, Voting.query);
-            votingTemplate($scope, Voting);
+            votingTemplate($scope, $location, Voting);
 
             $scope.showCreateLink = true;
         }
     ]);
 
-function votingTemplate($scope, Voting) {
+function votingTemplate($scope, $location, Voting) {
     $scope.answers = {};
     $scope.vote = function (answers) {
         var answerIds = parseAnswers(answers);
@@ -56,6 +56,10 @@ function votingTemplate($scope, Voting) {
                 _answerId: answerIds
             });
         $scope.voting.hasVoted = true;
+    };
+
+    $scope.editVoting = function(voting) {
+        $location.path("voting/" + voting._id + "/edit").replace();
     };
 
     $scope.deleteVoting = function (voting) {

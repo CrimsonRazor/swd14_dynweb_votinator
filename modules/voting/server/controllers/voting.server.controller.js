@@ -52,7 +52,9 @@ exports.create = function (req, res) {
  * Show the current voting
  */
 exports.read = function (req, res) {
-    res.json(req.voting);
+    Voting.findOne({_id: req.params.votingId}, function(err, voting) {
+        return res.json(voting);
+    });
 };
 
 /**
@@ -66,19 +68,13 @@ exports.readScript = function (req, res) {
  * Update a voting
  */
 exports.update = function (req, res) {
-    var voting = req.voting;
-
-    //TODO
-    //article.title = req.body.title;
-    //article.content = req.body.content;
-
-    voting.save(function (err) {
+    var voting = req.body;
+    Voting.findOneAndUpdate({_id: voting._id}, {$set: voting}, function(err, result) {
         if (err) {
-            return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-            });
+            console.log(err);
+            res.status(400).send(err);
         } else {
-            res.json(voting);
+            res.json(result);
         }
     });
 };

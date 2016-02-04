@@ -26,9 +26,13 @@
                  class="list-group-item"
                  role="button">
               <div class="list-group-item-overflow">{{voting.title}}</div>
-              <button class="btn btn-xs btn-warning pull-right"
+              <button class="btn btn-xs btn-danger pull-right"
                       data-ng-click="deleteVoting(voting); $event.stopPropagation();">
                 <span class="glyphicon glyphicon-trash"></span>
+              </button>
+              <button class="btn btn-xs btn-warning pull-right"
+                      data-ng-click="editVoting(voting); $event.stopPropagation();">
+                <span class="glyphicon glyphicon-edit"></span>
               </button>
             </div>
           </div>
