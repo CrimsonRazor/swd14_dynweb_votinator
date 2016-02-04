@@ -8,14 +8,14 @@ angular.module('voting').config(['$stateProvider',
                 url: '/voting',
                 template: '<ui-view/>'
             })
-            .state('voting.list', {
-                url: '',
-                controller: 'VotingListController',
-                templateUrl: 'modules/voting/client/views/list-votings.client.view.html',
-                data: {
-                    roles: ['user', 'admin']
-                }
-            })
+            //.state('voting.list', {
+            //    url: '',
+            //    controller: 'VotingListController',
+            //    templateUrl: 'modules/voting/client/views/list-votings.client.view.html',
+            //    data: {
+            //        roles: ['user', 'admin']
+            //    }
+            //})
             .state('voting.create', {
                 url: '/create',
                 controller: 'VotingCreateController',
@@ -42,9 +42,10 @@ angular.module('voting').config(['$stateProvider',
             })
             .state('voting.scripts', {
                 url: '/scripts',
-                controller: 'VotingScriptController',
+                controller: 'VotingStateController',
                 templateUrl: 'modules/voting/client/views/list-voting-scripts.client.view.html',
                 data: {
+                    ignoreState: true,
                     roles: ['admin']
                 }
             });
