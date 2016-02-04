@@ -1,7 +1,6 @@
 <form name="votingForm" class="form-horizontal" ng-submit="create(votingForm.$valid)" novalidate>
   <fieldset>
     <div class="form-group" show-errors>
-      <label for="title">Title</label>
       <input name="title" type="text" ng-model="title" id="title" class="form-control" placeholder="Title" required>
       <div ng-messages="votingForm.title.$error" role="alert">
         <p class="help-block error-text" ng-message="required">Voting title is required.</p>
@@ -22,8 +21,9 @@
         </div>
       </div>
       <div class="form-group" ng-show="votingType === 'recurring'">
-        <div ng-repeat="weekDay in recurrence.weekDays track by $index" style="display: inline-block; margin-right: 1em;" >
-          <input type="checkbox" class="form-control" ng-model="recurrence.weekDays[$index]" />
+        <div ng-repeat="weekDay in recurrence.weekDays track by $index"
+             style="display: inline-block; margin-right: 1em;">
+          <input type="checkbox" class="form-control" ng-model="recurrence.weekDays[$index]"/>
           <br/>
           <span>{{ $index | weekDayFilter }}</span>
         </div>
@@ -49,7 +49,7 @@
         </div>
       </div>
       <div class="input-group" ng-show="answerType === 'multiple'">
-        <span class="input-group-addon">Wählen Sie wie viele Antworten maximal ausgewählt werden können</span>
+        <span class="input-group-addon">Choose the amount of selectable answer</span>
         <slider class="form-control" ng-model="maxAnswers" min="0" step="1" max="answers.length"
                 value="maxAnswers"></slider>
         <span class="input-group-addon">{{maxAnswers || 0}}</span>
@@ -57,38 +57,52 @@
     </div>
 
     <div class="form-group">
-      <label for="answers">Answers</label>
       <ul name="answers" ng-model="answers" id="answers" class="list-group">
         <li class="list-group-item" ng-repeat="answer in answers">
-          <div class="btn btn-warning" ng-click="removeAnswer(answer)">X</div>
-          <span ng-bind="answer.title" class="voting-create-answer-name"></span>
+          <div class="btn btn-warning" ng-click="removeAnswer(answer)">
+            <span class="glyphicon glyphicon-trash"></span>
+          </div>
+          <span class="voting-create-answer-name">{{answer.title || 'Script'}}</span>
         </li>
       </ul>
-
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Answer..." ng-model="answer.title"/>
-        <span class="input-group-btn">
-          <button class="btn btn-primary" type="button" ng-click="addAnswer(answer)">+</button>
-        </span>
-      </div>
     </div>
-    <div class="input-group">
-      <textarea class="form-control" placeholder="Script..."
-                ng-model="answer.dynamicGenerationScript.script"></textarea>
+    <div class="form-group">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Answer..." data-ng-model="answer.title"/>
         <span class="input-group-btn">
-          <button class="btn btn-primary" type="button" ng-click="addScriptAnswer(answer)"
-                  uib-tooltip="Scripts must be approved by an administrator!">
+          <button class="btn btn-primary"
+                  type="button"
+                  data-ng-disabled="!answer.title"
+                  data-ng-click="addAnswer(answer)">
             +
           </button>
         </span>
+      </div>
+    </div>
+    <div class="form-group">
+      <div>
+      <textarea class="form-control"
+                placeholder="The script must call the function 'done' with the resolved answer as parameter."
+                style="resize:none"
+                rows="15"
+                data-ng-model="answer.dynamicGenerationScript.script"></textarea>
+        <span class="">
+          <button type="button"
+                  class="btn btn-primary"
+                  data-ng-click="addScriptAnswer(answer)"
+                  data-ng-disabled="!answer.dynamicGenerationScript.script"
+                  data-uib-tooltip="Scripts must be approved by an administrator!">
+            Add script
+          </button></span>
+      </div>
     </div>
 
     <div class="form-group">
-      <input type="submit" class="btn btn-default">
+      <input type="submit" class="btn btn-default" value="Submit">
     </div>
 
-    <div ng-show="error" class="text-danger">
-      <strong ng-bind="error"></strong>
+    <div data-ng-show="error" class="text-danger">
+      <strong data-ng-bind="error"></strong>
     </div>
   </fieldset>
 </form>

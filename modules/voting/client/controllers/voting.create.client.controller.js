@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('voting').controller('VotingCreateController', ['$scope', '$stateParams', '$location', 'Authentication', 'Voting',
-    function ($scope, $stateParams, $location, Authentication, Voting) {
+angular.module('voting').controller('VotingCreateController', ['$scope', '$state', '$stateParams', '$location', 'Authentication', 'Voting',
+    function ($scope, $state, $stateParams, $location, Authentication, Voting) {
         $scope.authentication = Authentication;
 
         initValues();
@@ -26,8 +26,8 @@ angular.module('voting').controller('VotingCreateController', ['$scope', '$state
                 recurrence: this.recurrence
             });
 
-            voting.$save(function (response) {
-                $location.path('voting/' + response._id);
+            voting.$save(function () {
+                $state.go('home');
 
                 initValues();
 

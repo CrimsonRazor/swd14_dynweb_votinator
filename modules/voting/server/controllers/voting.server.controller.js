@@ -83,7 +83,7 @@ exports.update = function (req, res) {
     });
 };
 
-function executeScriptsIfNecessary(answers) {
+function executeScriptsIfNecessary(answers, done) {
     var scriptsToRun = {};
     var generationScript;
 
@@ -92,28 +92,32 @@ function executeScriptsIfNecessary(answers) {
         //When unapproved script found -> return
         if (generationScript) {
             if (!generationScript.adminApproved) {
-                return;
+                done();
             } else {
                 scriptsToRun[generationScript._id] = generationScript.script;
             }
         }
     }
 
-    var scriptResults = scriptRunnerService.runScripts(scriptsToRun);
-
-    for (var i = 0; i < answers.length; i++) {
-        generationScript = answers[i].dynamicGenerationScript;
-        if (generationScript && scriptResults[generationScript._id]) {
-            answers[i].title = scriptResults[generationScript._id];
+    scriptRunnerService.runScripts(scriptsToRun, function (err, scriptResults) {
+        if (err) {
+            done(err);
+            return;
         }
-    }
-
+        for (var i = 0; i < answers.length; i++) {
+            generationScript = answers[i].dynamicGenerationScript;
+            if (generationScript && scriptResults[generationScript._id]) {
+                answers[i].title = scriptResults[generationScript._id];
+            }
+        }
+        done();
+    });
 }
 
 /**
  * Update a script
  */
-exports.updateScript = function (req, res) {
+exports.updateScript = function (req, res, next) {
     var voting = req.votingScript;
     var script = req.body;
     var scriptToUpdate;
@@ -144,16 +148,17 @@ exports.updateScript = function (req, res) {
     scriptToUpdate.hash = script.hash;
     scriptToUpdate.script = script.script;
 
-    executeScriptsIfNecessary(voting.answers);
-
-    voting.save(function (err) {
+    executeScriptsIfNecessary(voting.answers, function (err) {
         if (err) {
-            return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-            });
-        } else {
-            res.json(scriptToUpdate);
+            return next(err);
         }
+        voting.save(function (err) {
+            if (err) {
+                return next(err);
+            } else {
+                res.json(scriptToUpdate);
+            }
+        });
     });
 };
 
@@ -208,7 +213,14 @@ exports.closedUserList = function (req, res) {
 };
 
 exports.openList = function (req, res) {
-    list({'end': {$gt: Date.now()}, 'answers.dynamicGenerationScript.adminApproved': {$exists: false}}, req, res);
+    list({
+        $and: [
+            {'end': {$gte: new Date()}},
+            {
+                'answers.dynamicGenerationScript.adminApproved': {$nin: [false]}
+            }
+        ]
+    }, req, res);
 };
 
 exports.unapprovedScripts = function (req, res) {
