@@ -6,16 +6,21 @@ angular.module('voting')
             $scope.authentication = Authentication;
 
             $scope.find = function () {
-                $scope.votings = Voting.unapprovedScripts();
+                delete $scope.error;
+                Voting.unapprovedScripts().$promise.then(function (result) {
+                    $scope.votings = result;
+                });
             };
 
             $scope.find();
 
             $scope.selectAnswer = function (answer) {
+                delete $scope.error;
                 $scope.selectedAnswer = answer;
             };
 
             $scope.updateScript = function (approve) {
+                delete $scope.error;
                 if (approve) {
                     $scope.selectedAnswer.dynamicGenerationScript.adminApproved = !!approve;
                 }
@@ -26,9 +31,10 @@ angular.module('voting')
                     scriptId: scriptId
                 }, $scope.selectedAnswer.dynamicGenerationScript).$promise
                     .then(function () {
-                        alert("approved!")
+                        $scope.find();
+                        delete $scope.selectedAnswer;
                     }, function () {
-                        alert("error!")
+                        $scope.error = true;
                     });
             };
         }

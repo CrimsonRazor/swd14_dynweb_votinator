@@ -89,6 +89,7 @@ function executeScriptsIfNecessary(answers, done) {
         if (generationScript) {
             if (!generationScript.adminApproved) {
                 done();
+                return;
             } else {
                 scriptsToRun[generationScript._id] = generationScript.script;
             }

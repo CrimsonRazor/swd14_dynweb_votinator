@@ -54,20 +54,23 @@ function votingTemplate($scope, $location, Voting) {
             {
                 _id: $scope.voting._id,
                 _answerId: answerIds
-            });
+            }).$promise.then(function () {
+            $scope.refresh && $scope.refresh();
+        });
         $scope.voting.hasVoted = true;
     };
 
-    $scope.unvote = function() {
+    $scope.unvote = function () {
         Voting.unvote({},
             {
                 _id: $scope.voting._id
-            }).$promise.then(function(result) {
+            }).$promise.then(function () {
             $scope.voting.hasVoted = false;
+            $scope.refresh && $scope.refresh();
         });
     };
 
-    $scope.editVoting = function(voting) {
+    $scope.editVoting = function (voting) {
         $location.path("voting/" + voting._id + "/edit").replace();
     };
 
@@ -76,8 +79,9 @@ function votingTemplate($scope, $location, Voting) {
         Voting.delete({},
             {
                 _id: voting._id
-            }).$promise.then(function() {
+            }).$promise.then(function () {
             $scope.votings.splice(index, 1);
+            $scope.refresh && $scope.refresh();
         });
     };
 }
@@ -113,10 +117,17 @@ function dashboardWidgetTemplate($scope, title, Authentication, votingResource) 
                 voting.answers.forEach(function (answer) {
                     if (answer.votes.indexOf(userId) !== -1) {
                         voting.hasVoted = true;
-                        return;
                     }
-                })
+                });
+
+                if ($scope.voting && $scope.voting._id === voting._id) {
+                    $scope.voting = voting;
+                }
             });
+
+            if ($scope.voting) {
+                $scope.selectVoting($scope.voting);
+            }
         });
     };
 

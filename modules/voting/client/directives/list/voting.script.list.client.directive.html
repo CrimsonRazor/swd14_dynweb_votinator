@@ -1,5 +1,6 @@
 <div>
-  <ul class="list-group col-md-5 pull-left">
+  <h2 ng-if="!votings.length">No unapproved scripts found!</h2>
+  <ul class="list-group col-md-5 pull-left" ng-if="votings.length">
     <li class="list-group-item selectable"
         ng-repeat="voting in votings"
         ng-class="{'active': voting.selected}">
@@ -19,13 +20,25 @@
   </ul>
 
   <div class="pull-right col-md-7" data-ng-show="selectedAnswer">
-    <label>
-      Script for answer: {{selectedAnswer._id}}<br/>
-      <textarea data-ng-model="selectedAnswer.dynamicGenerationScript.script"></textarea>
-    </label>
-    <br/>
-    <button data-ng-click="updateScript(false)">Update only</button>
-    <button data-ng-click="updateScript(true)">Update & Approve</button>
+    <h3 class="text-danger" ng-if="error">Error during script update!</h3>
+    <div class="form-group">
+      <div>
+        <textarea class="form-control" data-ng-model="selectedAnswer.dynamicGenerationScript.script"
+                  placeholder="The script must call the function 'done' with the resolved answer as parameter."
+                  style="resize:none"
+                  rows="15"></textarea>
+        <span class="">
+    <button type="button"
+            class="btn btn-primary"
+            data-ng-click="updateScript(false)">Update only
+    </button>
+    <button type="button"
+            class="btn btn-primary"
+            data-ng-click="updateScript(true)">Update & Approve
+    </button></span>
+      </div>
+    </div>
+
   </div>
 </div>
 
